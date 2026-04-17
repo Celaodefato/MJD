@@ -9,34 +9,44 @@ import Checkout from './pages/Checkout';
 import Admin from './pages/Admin';
 import ProductDetails from './pages/ProductDetails';
 
+import { CartProvider, useCart } from './context/CartContext';
+
+const Header = () => {
+  const { totalItems } = useCart();
+  
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-deep/80 backdrop-blur-lg border-b border-white/5">
+      <div className="container mx-auto px-4 flex justify-between items-center h-16">
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="w-9 h-9 bg-secondary rounded-lg flex items-center justify-center group-hover:shadow-glow-amber transition-shadow">
+            <Music size={18} className="text-deep" />
+          </div>
+          <span className="text-xl font-bold tracking-tight">
+            MJD <span className="text-gradient">Instrumentos</span>
+          </span>
+        </Link>
+
+        <nav className="flex gap-6 items-center text-sm font-medium">
+          <Link to="/catalog" className="text-white/60 hover:text-white transition-colors duration-200">Produtos</Link>
+          <Link to="/cart" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors duration-200 relative">
+            <ShoppingCart size={18} />
+            <span className="hidden sm:inline">Carrinho</span>
+            {totalItems > 0 && (
+              <span className="absolute -top-1.5 -right-2 bg-secondary text-deep text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
+                {totalItems}
+              </span>
+            )}
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
+};
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col bg-deep">
-      {/* ─── Header ────────────────────────────────── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-deep/80 backdrop-blur-lg border-b border-white/5">
-        <div className="container mx-auto px-4 flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 bg-secondary rounded-lg flex items-center justify-center group-hover:shadow-glow-amber transition-shadow">
-              <Music size={18} className="text-deep" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">
-              MJD <span className="text-gradient">Instrumentos</span>
-            </span>
-          </Link>
-
-          <nav className="flex gap-6 items-center text-sm font-medium">
-            <Link to="/catalog" className="text-white/60 hover:text-white transition-colors duration-200">Produtos</Link>
-            <Link to="/cart" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors duration-200 relative">
-              <ShoppingCart size={18} />
-              <span className="hidden sm:inline">Carrinho</span>
-              {/* Badge count */}
-              <span className="absolute -top-1.5 -right-2 bg-secondary text-deep text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                0
-              </span>
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
       
       {/* Spacer for fixed header */}
       <div className="h-16" />
@@ -91,16 +101,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
-      </Layout>
+      <CartProvider>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </Layout>
+      </CartProvider>
     </BrowserRouter>
   )
 }

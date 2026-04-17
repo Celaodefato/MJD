@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingCart, Star, Flame, Sparkles, Guitar, Drum, Piano, Wind } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 /* ───── Mock data ─────────────────────────────────────── */
 const CATEGORIES = [
@@ -33,6 +34,8 @@ const BadgeEl = ({ type }: { type: string }) => {
 
 /* ───── Component ─────────────────────────────────────── */
 const Home = () => {
+  const { addToCart } = useCart();
+  
   return (
     <div className="overflow-hidden">
 
@@ -165,7 +168,10 @@ const Home = () => {
                       <span className="text-xl font-bold text-secondary">{fmt(p.price)}</span>
                       <span className="block text-[11px] text-white/30 mt-0.5">ou 12x de {fmt(p.price / 12)}</span>
                     </div>
-                    <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:bg-secondary hover:text-deep hover:border-secondary transition-all duration-200 hover:shadow-glow-amber">
+                    <button 
+                      onClick={() => addToCart(p)}
+                      className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:bg-secondary hover:text-deep hover:border-secondary transition-all duration-200 hover:shadow-glow-amber active:scale-95"
+                    >
                       <ShoppingCart size={16} />
                     </button>
                   </div>

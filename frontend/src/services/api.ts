@@ -1,78 +1,125 @@
 import { supabase } from '../lib/supabase';
 
+// Helper for dev mock data
+const MOCK_PRODUCTS = [
+  { 
+    id: 1, 
+    name: 'Guitarra Stratocaster Vintage (MOCK)', 
+    price: 2999.00, 
+    badge: 'hot',
+    categories: { name: 'Cordas' }, 
+    images: 'https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?auto=format&fit=crop&q=80&w=400' 
+  },
+  { 
+    id: 2, 
+    name: 'Teclado Arranjador Professional (MOCK)', 
+    price: 1850.50, 
+    badge: 'promo',
+    categories: { name: 'Teclas' }, 
+    images: 'https://images.unsplash.com/photo-1552422535-c45813c61732?auto=format&fit=crop&q=80&w=400' 
+  },
+  { 
+    id: 3, 
+    name: 'Bateria Acústica Premium (MOCK)', 
+    price: 4500.00, 
+    badge: 'new',
+    categories: { name: 'Percussão' }, 
+    images: 'https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&q=80&w=400' 
+  }
+];
+
 export const api = {
   getProducts: async (categorySlug?: string, search?: string) => {
-    let query = supabase
-      .from('products')
-      .select('*, categories!inner(*)')
-      .eq('is_active', true);
-
-    if (categorySlug) {
-      query = query.eq('categories.slug', categorySlug);
+    if (!supabase) {
+      console.log('Using Mock Data: getProducts');
+      let filtered = MOCK_PRODUCTS;
+      if (categorySlug) {
+        filtered = filtered.filter(p => p.categories.name.toLowerCase() === categorySlug.toLowerCase());
+      }
+      if (search) {
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+      }
+      return filtered;
     }
 
-    if (search) {
-      query = query.ilike('name', `%${search}%`);
-    }
+    try {
+      let query = supabase
+        .from('products')
+        .select('*, categories!inner(*)')
+        .eq('is_active', true);
 
-    const { data, error } = await query;
-    
-    if (error) {
+      if (categorySlug) {
+        query = query.eq('categories.slug', categorySlug);
+      }
+
+      if (search) {
+        query = query.ilike('name', `%${search}%`);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
       console.error('Supabase Error:', error);
-      // Fallback a mock em caso de erro (ex: banco ainda não configurado pelo user)
-      return [
-        { 
-          id: 1, 
-          name: 'Guitarra Stratocaster Vintage (MOCK)', 
-          price: 2999.00, 
-          categories: { name: 'Cordas' }, 
-          images: 'https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?auto=format&fit=crop&q=80&w=400' 
-        }
-      ];
+      return MOCK_PRODUCTS;
     }
-    
-    return data;
   },
   
   getProductById: async (id: string | number) => {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*, categories(*)')
-      .eq('id', id)
-      .single();
-
-    if (error) {
-      console.error('Supabase Error:', error);
-      throw new Error('Produto não encontrado');
+    if (!supabase) {
+      console.log('Using Mock Data: getProductById');
+      return MOCK_PRODUCTS.find(p => p.id === Number(id)) || MOCK_PRODUCTS[0];
     }
-    
-    return data;
+
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, categories(*)')
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Supabase Error:', error);
+      return MOCK_PRODUCTS.find(p => p.id === Number(id)) || MOCK_PRODUCTS[0];
+    }
   },
 
   createOrder: async (orderData: any, items: any[]) => {
-    // 1. Criar o pedido
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .insert([orderData])
-      .select()
-      .single();
+    if (!supabase) {
+      console.log('Using Mock Data: createOrder', orderData, items);
+      return { id: 'mock-order-' + Date.now(), ...orderData };
+    }
 
-    if (orderError) throw orderError;
+    try {
+      // 1. Criar o pedido
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert([orderData])
+        .select()
+        .single();
 
-    // 2. Criar os itens do pedido
-    const orderItems = items.map(item => ({
-      order_id: order.id,
-      product_id: item.id,
-      quantity: item.quantity,
-      price: item.price
-    }));
+      if (orderError) throw orderError;
 
-    const { error: itemsError } = await supabase
-      .from('order_items')
-      .insert(orderItems);
+      // 2. Criar os itens do pedido
+      const orderItems = items.map(item => ({
+        order_id: order.id,
+        product_id: item.id,
+        quantity: item.quantity,
+        price: item.price
+      }));
 
-    if (itemsError) throw itemsError;
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
 
-    return order;
+      if (itemsError) throw itemsError;
+
+      return order;
+    } catch (error) {
+      console.error('Supabase Error in createOrder:', error);
+      throw error;
+    }
   }
 };

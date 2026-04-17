@@ -1,99 +1,137 @@
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ShoppingCart, Check, ShieldCheck, Truck, ArrowLeft, Star } from 'lucide-react';
+import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, Check, Loader2 } from 'lucide-react';
+import { api } from '../services/api';
+import { useCart } from '../context/CartContext';
+
+const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
 const ProductDetails = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const { addToCart } = useCart();
 
-  const product = {
-    id,
-    name: 'Guitarra Stratocaster Vintage Sunburst',
-    price: 2999.00,
-    installments: 'ou 12x de R$ 249,91 s/ juros',
-    description: 'A Stratocaster Vintage oferece o clássico timbre estalado que moldou a história da música. Conta com corpo em Alder, braço em Maple perfil "C", e três captadores single-coil oferecendo versatilidade incrível. Ideal para blues, rock, funk e country.',
-    stock: 5,
-    specs: ['Corpo: Alder', 'Braço: Maple em "C"', 'Captadores: 3x Single-coil', 'Escala: Pau-ferro 25.5"', 'Trastes: 22 Medium Jumbo'],
-    image: 'https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?auto=format&fit=crop&q=80&w=1000'
-  };
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!id) return;
+      setLoading(true);
+      setError(false);
+      try {
+        const data = await api.getProductById(id);
+        setProduct(data);
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+    fetchProduct();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-deep flex flex-col items-center justify-center text-white/20">
+        <Loader2 size={48} className="animate-spin mb-4" />
+        <p>Carregando detalhes do produto...</p>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-screen bg-deep flex flex-col items-center justify-center text-center px-4">
+        <h2 className="text-2xl font-bold mb-4">Produto não encontrado</h2>
+        <p className="text-white/40 mb-8">O instrumento que você procura não está mais disponível ou o link está quebrado.</p>
+        <Link to="/catalog" className="btn-primary">Voltar ao Catálogo</Link>
+      </div>
+    );
+  }
+
+  const productImage = Array.isArray(product.images) ? product.images[0] : (product.images?.split(',')[0] || product.image);
 
   return (
-    <div className="min-h-screen bg-deep">
-      <div className="container mx-auto px-4 py-10">
+    <div className="min-h-screen bg-deep py-10">
+      <div className="container mx-auto px-4">
         {/* Breadcrumb */}
-        <Link to="/catalog" className="inline-flex items-center gap-2 text-white/30 hover:text-secondary text-sm mb-8 transition-colors">
-          <ArrowLeft size={14} /> Voltar ao catálogo
+        <Link to="/catalog" className="inline-flex items-center gap-2 text-white/40 hover:text-white mb-8 transition-colors text-sm font-medium">
+          <ArrowLeft size={16} /> Voltar para o Catálogo
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* ─── Image ─── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          {/* Image Gallery */}
           <div className="relative group">
-            <div className="absolute inset-0 bg-primary/10 rounded-3xl blur-2xl scale-90 group-hover:scale-95 transition-transform duration-700" />
-            <div className="relative rounded-3xl overflow-hidden bg-surface border border-white/5 aspect-square flex items-center justify-center p-8">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="max-w-full max-h-full object-contain drop-shadow-2xl"
+            <div className="absolute inset-0 bg-primary/10 rounded-3xl blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="relative aspect-square rounded-3xl overflow-hidden glass border-white/5 shadow-2xl">
+              <img 
+                src={productImage} 
+                alt={product.name} 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
           </div>
 
-          {/* ─── Info ─── */}
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/30 mb-2">Cordas &gt; Guitarras</span>
-            <h1 className="font-display text-4xl lg:text-5xl tracking-wide mb-6 leading-[1.1]">{product.name.toUpperCase()}</h1>
-
-            {/* Stars */}
-            <div className="flex items-center gap-2 mb-6">
+          {/* Product Info */}
+          <div className="animate-slide-up">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="badge-new">Novo</span>
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-secondary fill-secondary" />)}
               </div>
-              <span className="text-white/30 text-xs">(42 avaliações)</span>
+              <span className="text-white/30 text-sm">(24 avaliações)</span>
             </div>
 
-            {/* Stock */}
-            <div className="mb-6">
-              <span className="inline-flex items-center gap-1.5 text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-full text-xs font-semibold border border-emerald-400/20">
-                <Check size={12} /> Em Estoque ({product.stock} unid.)
-              </span>
-            </div>
+            <h1 className="font-display text-4xl md:text-6xl tracking-wide mb-4 leading-tight">
+              {product.name.toUpperCase()}
+            </h1>
+            
+            <p className="text-white/50 text-lg mb-8 leading-relaxed max-w-xl">
+              {product.description}
+            </p>
 
-            {/* Price */}
-            <div className="glass p-6 mb-8">
-              <div className="text-4xl font-bold text-secondary mb-1">{fmt(product.price)}</div>
-              <div className="text-white/30 text-sm">{product.installments}</div>
-            </div>
-
-            {/* Add to cart */}
-            <button className="btn-primary flex items-center justify-center gap-3 w-full py-4 text-lg mb-6">
-              <ShoppingCart size={22} />
-              Adicionar ao Carrinho
-            </button>
-
-            {/* Trust badges */}
-            <div className="grid grid-cols-2 gap-4 text-xs text-white/30 mb-10">
-              <div className="flex items-center gap-2 bg-white/5 rounded-xl p-3 border border-white/5">
-                <Truck size={16} className="text-secondary shrink-0" /> Frete calculado no checkout
+            <div className="glass p-6 md:p-8 mb-8 border-secondary/10 bg-gradient-to-br from-white/[0.03] to-white/[0.01]">
+              <div className="flex items-baseline gap-4 mb-2">
+                <span className="text-4xl md:text-5xl font-bold text-secondary font-display tracking-tight">
+                  {fmt(product.price)}
+                </span>
+                <span className="text-white/30 line-through text-lg">
+                  {fmt(product.price * 1.2)}
+                </span>
               </div>
-              <div className="flex items-center gap-2 bg-white/5 rounded-xl p-3 border border-white/5">
-                <ShieldCheck size={16} className="text-secondary shrink-0" /> Garantia de 1 ano
+              <p className="text-white/40 text-sm mb-6">
+                em até 12x de <span className="text-white/80 font-bold">{fmt(product.price / 12)}</span> sem juros no cartão
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button 
+                  onClick={() => addToCart(product)}
+                  className="btn-primary flex-1 flex justify-center items-center gap-3 py-4 text-xl shadow-glow-amber h-14"
+                >
+                  <ShoppingCart size={22} /> Adicionar ao Carrinho
+                </button>
+                <div className="flex items-center gap-2 text-emerald-400 font-semibold px-4 py-2 rounded-xl bg-emerald-400/5 border border-emerald-400/10">
+                  <Check size={18} /> Em estoque
+                </div>
               </div>
             </div>
 
-            {/* Description */}
-            <div className="border-t border-white/5 pt-8">
-              <h3 className="font-display text-2xl tracking-wide mb-4">DESCRIÇÃO</h3>
-              <p className="text-white/50 leading-relaxed mb-6">{product.description}</p>
-
-              <h3 className="font-display text-2xl tracking-wide mb-4">ESPECIFICAÇÕES</h3>
-              <ul className="space-y-2">
-                {product.specs.map((s, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-white/40">
-                    <span className="w-1.5 h-1.5 bg-secondary rounded-full shrink-0" />
-                    {s}
-                  </li>
-                ))}
-              </ul>
+            {/* Trust Badges */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3 text-white/40 text-xs uppercase tracking-widest font-bold">
+                <Shield size={20} className="text-secondary/50" />
+                <span>Garantia de<br/>12 meses</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/40 text-xs uppercase tracking-widest font-bold">
+                <Truck size={20} className="text-secondary/50" />
+                <span>Entrega<br/>Segura</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/40 text-xs uppercase tracking-widest font-bold">
+                <RotateCcw size={20} className="text-secondary/50" />
+                <span>Devolução<br/>Grátis</span>
+              </div>
             </div>
           </div>
         </div>
