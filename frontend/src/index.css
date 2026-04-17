@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-deep:    #0a0e1a;
+  --c-surface: #111827;
+  --c-panel:   #1a2236;
+  --c-primary: #2563eb;
+  --c-secondary: #f59e0b;
+  --c-secondary-light: #fbbf24;
+  --c-accent-red: #dc2626;
+  --c-accent-purple: #7c3aed;
+}
+
+@layer base {
+  body {
+    background-color: var(--c-deep);
+    color: #ffffff;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--c-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--c-primary); border-radius: 4px; }
+}
+
+@layer components {
+  /* ─── Botões ─── */
+  .btn-primary {
+    background-color: var(--c-secondary);
+    color: var(--c-deep);
+    font-weight: 700;
+    padding: 0.875rem 2rem;
+    border-radius: 9999px;
+    font-size: 1rem;
+    transition: all 0.2s ease-out;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary:hover {
+    background-color: var(--c-secondary-light);
+    box-shadow: 0 0 20px rgba(245,158,11,0.4);
+    transform: translateY(-2px);
+  }
+  .btn-primary:active { transform: scale(0.95); }
+
+  .btn-secondary {
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+    padding: 0.75rem 1.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease-out;
+    backdrop-filter: blur(8px);
+    background: transparent;
+    cursor: pointer;
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.6);
+    color: #fff;
+  }
+
+  /* ─── Cards ─── */
+  .card-product {
+    background-color: var(--c-surface);
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s ease-out;
+  }
+  .card-product:hover {
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    transform: translateY(-8px);
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  .card-category {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.5s ease-out;
+  }
+  .card-category:hover {
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    transform: translateY(-8px);
+  }
+
+  /* ─── Badges ─── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+  }
+  .badge-new {
+    background: rgba(37,99,235,0.2);
+    color: var(--c-primary);
+    border: 1px solid rgba(37,99,235,0.3);
+  }
+  .badge-hot {
+    background: rgba(220,38,38,0.2);
+    color: #f87171;
+    border: 1px solid rgba(220,38,38,0.3);
+  }
+  .badge-promo {
+    background: rgba(245,158,11,0.2);
+    color: var(--c-secondary);
+    border: 1px solid rgba(245,158,11,0.3);
+  }
+
+  /* ─── Section wave ─── */
+  .section-wave {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  /* ─── Glass ─── */
+  .glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 1rem;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(to right, var(--c-secondary), var(--c-secondary-light), var(--c-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
