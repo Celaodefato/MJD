@@ -5,12 +5,12 @@
 @tailwind utilities;
 
 :root {
-  --c-deep:    #0a0e1a;
-  --c-surface: #111827;
-  --c-panel:   #1a2236;
-  --c-primary: #2563eb;
-  --c-secondary: #f59e0b;
-  --c-secondary-light: #fbbf24;
+  --c-deep:    #1a1a1a;
+  --c-surface: #262626;
+  --c-panel:   #e8dcca;
+  --c-primary: #d68a48;
+  --c-secondary: #d68a48;
+  --c-secondary-light: #e8dcca;
   --c-accent-red: #dc2626;
   --c-accent-purple: #7c3aed;
 }

@@ -8,6 +8,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Admin from './pages/Admin';
 import ProductDetails from './pages/ProductDetails';
+import About from './pages/About';
 
 import { CartProvider, useCart } from './context/CartContext';
 
@@ -18,16 +19,24 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-deep/80 backdrop-blur-lg border-b border-white/5">
       <div className="container mx-auto px-4 flex justify-between items-center h-16">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 bg-secondary rounded-lg flex items-center justify-center group-hover:shadow-glow-amber transition-shadow">
-            <Music size={18} className="text-deep" />
+          <img src="/logo.png" alt="MJD Logo" className="h-10 w-auto brightness-0 invert transition-all group-hover:drop-shadow-glow-amber" onError={(e) => {
+            // Fallback if image doesn't exist yet
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+          }} />
+          <div className="hidden flex items-center gap-2">
+            <div className="w-9 h-9 bg-secondary rounded-lg flex items-center justify-center group-hover:shadow-glow-amber transition-shadow">
+              <Music size={18} className="text-deep" />
+            </div>
+            <span className="text-xl font-bold tracking-tight">
+              MJD <span className="text-gradient">Instrumentos</span>
+            </span>
           </div>
-          <span className="text-xl font-bold tracking-tight">
-            MJD <span className="text-gradient">Instrumentos</span>
-          </span>
         </Link>
 
         <nav className="flex gap-6 items-center text-sm font-medium">
           <Link to="/catalog" className="text-white/60 hover:text-white transition-colors duration-200">Produtos</Link>
+          <Link to="/about" className="text-white/60 hover:text-white transition-colors duration-200">Quem Somos</Link>
           <Link to="/cart" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors duration-200 relative">
             <ShoppingCart size={18} />
             <span className="hidden sm:inline">Carrinho</span>
@@ -61,15 +70,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             {/* Brand */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">
-                  <Music size={16} className="text-deep" />
-                </div>
-                <span className="text-lg font-bold">MJD <span className="text-gradient">Instrumentos</span></span>
+              <div className="flex flex-col gap-4 mb-4">
+                <img src="/logo.png" alt="MJD Logo" className="h-12 w-fit brightness-0 invert" />
+                <p className="text-white/40 text-sm leading-relaxed">
+                  Sua loja online de instrumentos musicais. Qualidade, paixão e os melhores preços do Brasil.
+                </p>
               </div>
-              <p className="text-white/40 text-sm leading-relaxed">
-                Sua loja online de instrumentos musicais. Qualidade, paixão e os melhores preços do Brasil.
-              </p>
             </div>
             {/* Links */}
             <div>
@@ -77,6 +83,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               <ul className="space-y-2 text-sm">
                 <li><Link to="/" className="text-white/40 hover:text-secondary transition-colors">Home</Link></li>
                 <li><Link to="/catalog" className="text-white/40 hover:text-secondary transition-colors">Catálogo</Link></li>
+                <li><Link to="/about" className="text-white/40 hover:text-secondary transition-colors">Quem Somos</Link></li>
                 <li><Link to="/cart" className="text-white/40 hover:text-secondary transition-colors">Carrinho</Link></li>
               </ul>
             </div>
@@ -107,6 +114,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/about" element={<About />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<Admin />} />
