@@ -7,17 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        // 3 níveis de azul
-        'deep':    '#0a0e1a',   // fundo escuro principal
-        'surface': '#111827',   // cards, painéis
-        'panel':   '#1a2236',   // detalhes, hovers
-        // Primária e secundária
-        'primary':   '#2563eb', // azul vibrante
-        'primary-dark': '#1e3a8a',
-        'secondary': '#f59e0b', // dourado/âmbar
-        'secondary-light': '#fbbf24',
+        'deep':    '#1a1a1a',   // fundo escuro principal
+        'surface': '#262626',   // cards, painéis
+        'panel':   '#333333',   // detalhes, hovers
+        'primary':   '#d68a48', // laranja/cobre
+        'primary-dark': '#b06d34',
+        'secondary': '#d68a48',
+        'secondary-light': '#e8dcca',
         // Acentos
-        'accent-amber':  '#d97706',
+        'accent-amber':  '#d68a48',
         'accent-red':    '#dc2626',
         'accent-purple': '#7c3aed',
       },
@@ -26,14 +24,14 @@ export default {
         body: ['"Inter"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'glow-amber': '0 0 20px rgba(245,158,11,0.4)',
-        'glow-blue':  '0 0 20px rgba(37,99,235,0.4)',
+        'glow-amber': '0 0 20px rgba(214,138,72,0.4)',
+        'glow-blue':  '0 0 20px rgba(214,138,72,0.4)',
         'card':       '0 8px 32px rgba(0,0,0,0.25)',
         'card-hover': '0 16px 48px rgba(0,0,0,0.4)',
       },
       backgroundImage: {
-        'gradient-stage': 'linear-gradient(135deg, #0a0e1a 0%, #1a1040 50%, #0a0e1a 100%)',
-        'gradient-hero':  'linear-gradient(180deg, rgba(10,14,26,0.3) 0%, rgba(10,14,26,0.85) 60%, #0a0e1a 100%)',
+        'gradient-stage': 'linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #1a1a1a 100%)',
+        'gradient-hero':  'linear-gradient(180deg, rgba(26,26,26,0.3) 0%, rgba(26,26,26,0.85) 60%, #1a1a1a 100%)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

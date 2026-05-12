@@ -87,7 +87,7 @@ const Home = () => {
         {/* Bottom wave */}
         <div className="absolute bottom-0 left-0 right-0 section-wave">
           <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-16 md:h-20">
-            <path fill="#0a0e1a" d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" />
+            <path fill="#1a1a1a" d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" />
           </svg>
         </div>
       </section>
@@ -226,9 +226,9 @@ const Home = () => {
       </section>
 
       {/* ═══════════════ WAVE DIVIDER ═══════════════ */}
-      <div className="section-wave" style={{ background: 'linear-gradient(135deg, #0a0e1a 0%, #1a1040 50%, #0a0e1a 100%)' }}>
+      <div className="section-wave" style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #1a1a1a 100%)' }}>
         <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-12">
-          <path fill="#0a0e1a" d="M0,30 C480,0 960,60 1440,20 L1440,60 L0,60 Z" />
+          <path fill="#1a1a1a" d="M0,30 C480,0 960,60 1440,20 L1440,60 L0,60 Z" />
         </svg>
       </div>
 
